@@ -48,8 +48,12 @@ def call():
     from_number = request.values['From']
 
     if 'Digits' in request.values:
-        to_number = request.values['Digits']
-        makeCall(to_number, from_number, "http://f19a3de5.ngrok.io/phase1")
+        try:
+            to_number = request.values['Digits']
+            makeCall(to_number, from_number, request.url_root + 'phase1')
+        except:
+            resp.say("Please enter a valid phone number.")
+            resp.redirect('/phase2')
     else: 
         resp.say("Please enter a valid phone number.")
         resp.redirect('/phase2')
@@ -70,7 +74,7 @@ def callWithDelay():
             else:
                 split_digits = request.values['Digits'].split('#')
                 to_number = split_digits[0]
-                Timer(int(split_digits[1]), makeCall, (to_number, from_number, "http://f19a3de5.ngrok.io/phase1")).start()
+                Timer(int(split_digits[1]), makeCall, (to_number, from_number, request.url_root + 'phase1')).start()
         except:
             resp.say("Please enter a valid phone number.")
             resp.redirect('/phase3')
